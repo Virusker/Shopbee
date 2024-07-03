@@ -1,0 +1,61 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}SHOPBEE{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"><img class="img-fluid" src="{{product.avatar}}" alt=""></div>
+        <div class="col-8">
+
+            <h1>{{ product.name }}</h1>
+            <ul class="list-group">
+                <li class="list-group-item">Name: <span id="product_name">{{ product.name }}</span></li>
+                <li class="list-group-item">Price: <span id="product_price">{{ "{:,.0f}".format(product.price) }}</span> ₫</li>
+                <li class="list-group-item">Category: {{ product.category.name }}</li>
+                <li class="list-group-item">Description: {{ product.description }}</li>
+            </ul>
+            <div class="row">
+                <div class="col">
+                    <form id="add_cart" action="{{ url_for('add_to_cart') }}" method="post">
+                        <label for="">Quantity</label>
+
+                        <input type="number" name="quantity" value="1" min="1" max="999">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="submit" class="btn btn-primary" value="Add to cart">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        </ul>
+
+
+
+    </div>
+<script>
+    $(document).ready(function () {
+        $('#add_cart').submit(function (e) {
+            e.preventDefault();
+            var product_name = $('#product_name').text();
+            var product_price = $('#product_price').text()
+            var form = $(this);
+            form.append('<input type="hidden" name="product_name" value="' + product_name + '">');
+            form.append('<input type="hidden" name="product_price" value="' + product_price + '">');
+            var url = "/api/add_to_cart";
+            var data = form.serialize();
+            $('#total_quantity_cart').text(parseInt($('#total_quantity_cart').text()) + parseInt(data.split('=')[1]));
+            $.post(url, data, function (res) {
+                if (res.status == 'success') {
+                    alert('Add to cart success');
+                } else {
+                    alert('Add to cart fail');
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

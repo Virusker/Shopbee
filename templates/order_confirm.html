@@ -1,0 +1,32 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}SHOPBEE{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+
+        <div class="col">
+            <h2>Bạn đã đặt hàng thành công</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item">Họ và tên: {{ o_confirm.name }}</li>
+                <li class="list-group-item">Email: {{ o_confirm.email }}</li>
+                <li class="list-group-item">Số điện thoại: {{ o_confirm.phone }}</li>
+                <li class="list-group-item">Địa chỉ: {{ o_confirm.address }}</li>
+                <li class="list-group-item">Quận/Huyện: {{ o_confirm.district }}</li>
+                <li class="list-group-item">Thành phố: {{ o_confirm.city }}</li>
+                <li class="list-group-item">Ghi chú: {{ o_confirm.note }}</li>
+                <li class="list-group-item">Vận chuyển: {{ o_confirm.delivery }}</li>
+                <li class="list-group-item">Thanh toán: {{ o_confirm.payment }}</li>
+                <li class="list-group-item">Tổng tiền: {{ o_confirm.total }}</li>
+              </ul>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}SHOPBEE{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Checkout</h3>
+        </div>
+    </div>
+    <form action="{{ url_for('order_confirm') }}" method="post">
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <h4>Thông tin khách hàng</h4>
+                <div class="form-floating mb-3">
+                    <input required type="text" name="name" value="{{ current_user.name }}" class="form-control"
+                        id="floatingInput" placeholder="">
+                    <label for="floatingInput">Họ và tên</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input required type="email" name="email" value="{{ current_user.email }}" class="form-control"
+                        id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input required type="tel" name="phone" value="{{ current_user.phone if current_user.phone!=None else '' }}" class="form-control"
+                        id="floatingInput" placeholder="">
+                    <label for="floatingInput">Số điện thoại</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input required type="text" name="address" value="{{ user_detail.address if user_detail.address!=None else '' }}" class="form-control"
+                        id="floatingInput" placeholder="">
+                    <label for="floatingInput">Địa chỉ</label>
+                </div>
+                <div class="row">
+                    <div class="col form-floating mb-3">
+                        <input required type="text" name="district" value="{{ user_detail.district if user_detail.district!=None else '' }}" class="form-control"
+                            id="floatingInput" placeholder="">
+                        <label for="floatingInput">Quận/Huyện</label>
+                    </div>
+
+                    <div class="col form-floating mb-3">
+                        <input required type="text" name="city" value="{{ user_detail.city if user_detail.city!=None else '' }}" class="form-control"
+                            id="floatingInput" placeholder="">
+                        <label for="floatingInput">Thành phố</label>
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" name="note" placeholder="Leave a comment here" id="floatingTextarea2"
+                        style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">Ghi chú</label>
+                </div>
+
+            </div>
+            <div class="col-12 col-md-3">
+                <h4>Vận chuyển</h4>
+                <!-- list group radio -->
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <input required type="radio" name="delivery" value="0">
+                        Giao hàng tiêu chuẩn
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="delivery" value="1">
+                        Giao hàng nhanh
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="delivery" value="2">
+                        Giao hàng siêu tốc
+                    </li>
+                </ul>
+                <h4>Thanh toán</h4>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <input required type="radio" name="payment" value="0">
+                        Thanh toán khi nhận hàng
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="payment" value="1">
+                        Thanh toán qua thẻ
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="payment" value="2">
+                        Thanh toán qua ví điện tử
+                    </li>
+                </ul>
+
+            </div>
+            <div class="col-12 col-md-5">
+                <h4>Đơn hàng</h4>
+                <ul class="list-group">
+                    {% for c in carts %}
+                    <li class="list-group-item">{{c.product.name}} x {{c.quantity}} : {{c.product.price * c.quantity}}
+                    </li>
+                    {% endfor %}
+                    <li class="list-group-item">Tổng tiền: {{total}}</li>
+                </ul>
+
+                <input type="hidden" name="total" value="{{ total }}">
+                <button type="submit" class="btn btn-primary mt-3">Đặt Hàng</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+{% endblock %}

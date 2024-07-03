@@ -1,0 +1,41 @@
+{% extends 'admin/layout/base.html' %}
+
+{% block name %}Edit Product{% endblock %}
+{% block content %}
+
+<div class="container">
+    
+    <form action="{{ url_for('admin_edit_product',id=product.id) }}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="ID" class="form-label">ID</label>
+            <input type="text" name="id" value="{{product.id}}" readonly class="form-control" id="ID" aria-describedby="emailHelp">
+        </div>
+        
+        <div class="mb-3">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" name="name" value="{{product.name}}" class="form-control" id="Name" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="Price" class="form-label">Price</label>
+            <input type="text" name="price" value="{{product.price}}" class="form-control" id="Price" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="Category" class="form-label">Category</label>
+            <select name="category_id" class="form-control" id="Category">
+                {% for c in categories %}
+                <option value="{{ c.id }}" {% if c.id == product.category_id %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description</label>
+            <textarea name="description" class="form-control" id="Description" rows="3">{{product.description}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="Avatar" class="form-label">Avatar</label>
+            <input type="text" name="avatar" value="{{product.avatar}}" class="form-control" id="Avatar">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Product</button>
+      </form>
+
+{% endblock %}

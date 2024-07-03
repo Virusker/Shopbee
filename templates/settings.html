@@ -1,0 +1,144 @@
+{% extends 'layout/base.html' %}
+
+{% block title %} {{activepage}} {% endblock %}
+{% block js %}
+<script src="{{ url_for('static',filename='js/settings.js') }}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="d-flex align-items-start">
+        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <button class="nav-link {{ 'active' if activepage == 'info' else ''}}" id="v-pills-profile-tab" data-bs-toggle="pill"
+                data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"
+                aria-selected="true">
+                Hồ sơ
+            </button>
+
+            <button class="nav-link {{ 'active' if activepage == 'changepassword' else ''}}" id="v-pills-changePassword-tab" data-bs-toggle="pill"
+                data-bs-target="#v-pills-changePassword" type="button" role="tab" aria-controls="v-pills-changePassword"
+                aria-selected="false">
+                đổi mật khẩu
+            </button>
+            <button class="nav-link {{ 'active' if activepage == 'address' else ''}}" id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address"
+                type="button" role="tab" aria-controls="v-pills-address" aria-selected="false">
+                địa chỉ
+            </button>
+            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
+                type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+                Settings
+            </button>
+        </div>
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade {{ 'show active' if activepage == 'info' else ''}}" id="v-pills-profile" role="tabpanel"
+                aria-labelledby="v-pills-profile-tab" tabindex="0">
+                <h2>Thông tin cá nhân</h2>
+                <form id="form-infor" action="{{ url_for('settings_update_info') }}" method="post">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" id="Name" aria-describedby="emailHelp"
+                            value="{{current_user.name}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="email" name="email" readonly class="form-control" id="Email"
+                            aria-describedby="emailHelp" value="{{current_user.email}}">
+                    </div>
+                    <!-- số điện thoại -->
+                    <div class="mb-3">
+                        <label for="Phone" class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" id="Phone" aria-describedby="emailHelp"
+                            value="{{ current_user.phone }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-changePassword" role="tabpanel"
+                aria-labelledby="v-pills-changePassword-tab" tabindex="0">
+                <h3>đổi mật khẩu</h3>
+                <form id="password_change" action="{{ url_for('password_change') }}" method="post">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="OldPassword" class="form-label">Mật Khẩu Cũ</label>
+                        <input type="password" name="old_password" class="form-control" id="OldPassword"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="NewPassword" class="form-label">Mật Khẩu mới</label>
+                        <input type="password" name="new_password" class="form-control" id="NewPassword"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ConfirmPassword" class="form-label">Nhập Lại Mật khẩu mới</label>
+                        <input type="password" name="confirm_password" class="form-control" id="ConfirmPassword"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                </form>
+            </div>
+            <!-- địa chỉ -->
+            <div class="tab-pane fade {{ 'show active' if activepage == 'address' else ''}}" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-address-tab"
+                tabindex="0">
+                <h3>Địa Chỉ</h3>
+                <form action="{{ url_for('settings_update_address') }}" method="post">
+                    <!-- address -->
+                    <div class="mb-3">
+                        <label for="Address" class="form-label">Address</label>
+                        <input type="text" name="address" class="form-control" id="Address" aria-describedby="emailHelp"
+                            value="{{ user_detail.address }}">
+                    </div>
+                    <!-- district -->
+                    <div class="mb-3">
+                        <label for="District" class="form-label">District</label>
+                        <input type="text" name="district" class="form-control" id="District" aria-describedby="emailHelp"
+                            value="{{ user_detail.district }}">
+                    </div>
+                    <!-- city -->
+                    <div class="mb-3">
+                        <label for="City" class="form-label">City</label>
+                        <input type="text" name="city" class="form-control" id="City" aria-describedby="emailHelp"
+                            value="{{ user_detail.city }}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab"
+                tabindex="0">...</div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#password_change").on("submit", function (e) {
+            e.preventDefault();
+            var old_password = $("#OldPassword").val();
+            var new_password = $("#NewPassword").val();
+            var confirm_password = $("#ConfirmPassword").val();
+            if (old_password == "") {
+                alert("Old password is required");
+                return false;
+            }
+            if (new_password == "") {
+                alert("New password is required");
+                return false;
+            }
+            if (confirm_password == "") {
+                alert("Confirm password is required");
+                return false;
+            }
+            if (new_password != confirm_password) {
+                alert("New password and confirm password should be same");
+                return false;
+            }
+            change_password();
+        });
+
+    });
+</script>
+{% endblock %}

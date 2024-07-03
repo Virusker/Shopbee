@@ -1,0 +1,116 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}SHOPBEE{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row" style="border-bottom: 1px solid black;">
+        <div class="col">
+            <h4>title</h4>
+        </div>
+        <!-- <div class="col">Sắp xếp theo</div>
+        <div class="col">Phổ biến</div>
+        <div class="col">Mới nhất</div>
+        <div class="col">Giá: Thấp đến cao</div>
+        <div class="col">Giá: Cao đến thấp</div> -->
+        <div class="col">Sắp xếp theo</div>
+        <div class="col">
+            <!-- <div class="btn-group" role="group" aria-label="Basic radio toggle button group"> -->
+            <input type="radio" value="hot" class="btn-check" name="options-base" id="option1" autocomplete="off" {% if
+                request.args.get('s')=='hot' %}checked{% endif %}>
+            <label class="btn" for="option1">Phổ biến</label>
+        </div>
+        <div class="col">
+            <input type="radio" value="new" class="btn-check" name="options-base" id="option2" autocomplete="off" {% if
+                request.args.get('s')=='new' %}checked{% endif %}>
+            <label class="btn" for="option2">Mới nhất</label>
+        </div>
+        <div class="col">
+            <input type="radio" value="asc" class="btn-check" name="options-base" id="option3" autocomplete="off" {% if
+                request.args.get('s')=='asc' %}checked{% endif %}>
+            <label class="btn" for="option3">Giá: Thấp đến cao</label>
+        </div>
+        <div class="col">
+            <input type="radio" value="desc" class="btn-check" name="options-base" id="option4" autocomplete="off" {% if
+                request.args.get('s')=='desc' %}checked{% endif %}>
+            <label class="btn" for="option4">Giá: Cao đến thấp</label>
+        </div>
+
+        <!-- </div> -->
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-2" style="border-right:1px solid black ;background-color: #ededed;">
+        <h6>Sản Phẩm Mới</h6>
+    </div>
+
+    <div class="col-md-10">
+        <div class="row">
+            {% for p in products %}
+            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-3">
+                <div class="card" style="width: 250px;">
+                    <img src="{{p.avatar}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{p.name}}</h5>
+                        <p class="card-text">{{ "{:,.0f}".format(p.price) }} ₫</p>
+                        <a href="{{ url_for('product',id=p.id) }}" class="btn btn-primary">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+
+        {% if total_pages > 1 %}
+        <div class="col"></div>
+        <div class="col">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% set args = request.args.copy() %}
+                        {% set _ = args.pop('page', None) %}
+                    <li class="page-item {{ 'disabled' if page == 1 }}">
+                        <a class="page-link" href="{{ url_for('products', page=page-1,**args) }}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+
+                    {% for idx in range(1,total_pages + 1) %}
+                    <li class="page-item {% if idx == page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('products', page=idx,**args) }}">
+                            {{ idx }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                    <li class="page-item {{ 'disabled' if page == total_pages }}">
+                        <a class="page-link" href="{{ url_for('products', page=page+1,**args) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('input[type=radio][name=options-base]').change(function () {
+            var value = $(this).val();
+            var url = new URL(window.location.href);
+            var search_params = url.searchParams;
+            search_params.set('s', value);
+            url.search = search_params.toString();
+            var new_url = url.toString();
+            window.location.href = new_url;
+        });
+    });
+</script>
+
+{% endblock %}

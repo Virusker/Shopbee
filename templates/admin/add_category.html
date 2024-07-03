@@ -1,0 +1,20 @@
+{% extends 'admin/layout/base.html' %}
+
+
+{% block name %}ADD Category{% endblock %}
+{% block content %}
+
+<div class="container">
+    
+    <form action="{{ url_for('admin_add_category') }}" method="post">
+        <div class="mb-3">
+          <label for="Name" class="form-label">Name</label>
+          <input type="text" name="name" class="form-control" id="Name" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="Description" class="form-label">Description</label>
+          <textarea name="description" class="form-control" id="Description" rows="3"></textarea>
+        <button type="submit" class="btn btn-primary">Add Category</button>
+      </form>
+
+{% endblock %}

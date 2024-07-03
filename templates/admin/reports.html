@@ -1,0 +1,109 @@
+{% extends 'admin/layout/base.html' %}
+
+{% block name %}Báo cáo{% endblock %}
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+{% block content %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table">
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>total</th>
+                </tr>
+                {% for p in product_stats %}
+                <tr>
+                    <td>{{ p[0].id }}</td>
+                    <td>{{ p[0].name }}</td>
+                    <td>{{ "{:,.0f}".format(p[1]) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+        <div class="col-md-8">
+            <form class="form-floating" action="">
+                <div class="row mb-2">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="kw" id="name">
+                            <label for="name">name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="date" class="form-control" name="start_date" id="start_date">
+                            <label for="start_date">Start date</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="date" class="form-control" name="end_date" id="end_date">
+                            <label for="end_date">End date</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <input type="submit" class="btn btn-primary" value="Filter">
+                    </div>
+                    
+                </div>
+                
+            </form>
+            <div>
+                <canvas id="ProductChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const ctx = document.getElementById('ProductChart');
+
+    var labels = [];
+    var data = [];
+    var coloR = [];
+    var borderColor = [];
+    var r, g, b;
+    {% for p in product_stats %}
+    labels.push("{{ p[0].name }}");
+    data.push("{{ p[1] }}");
+    r = Math.floor(Math.random() * 255);
+    g = Math.floor(Math.random() * 255);
+    b = Math.floor(Math.random() * 255);
+    coloR.push("rgba(" + r + "," + g + "," + b + ",0.2)");
+    borderColor.push("rgba(" + r + "," + g + "," + b + ",1)");
+    {% endfor %}
+    var title = "Doanh thu";
+    loadChart(ctx, title, labels, data, coloR, borderColor);
+
+    function loadChart(ctx, title, labels, data, coloR, borderColor) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: data,
+                    backgroundColor: coloR,
+                    borderColor: borderColor,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+{% endblock %}

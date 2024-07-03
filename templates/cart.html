@@ -1,0 +1,108 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static',filename='js/cart.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Giỏ hàng của bạn</h2>
+        </div>
+    </div>
+    {% if carts|length == 0 %}
+    <div class="col">Không có sản phẩm nào trong giỏ hàng</div>
+    {% else %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Xóa</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in carts %}
+            <tr>
+                <td> <img src="{{c.product.avatar}}" class="img-thumbnail" style="width: auto; height: 150px;"
+                        alt="..."></td>
+                <td class="align-middle">
+                    {{ c.product.name }}
+                </td>
+                <td class="align-middle" id="price-{{c.id}}">
+                    {{ "{:,.0f}".format(c.product.price).replace(",", ".") }} ₫
+                </td>
+                <td class="align-middle">
+                    <input id="quantity-{{c.id}}" type="number" value="{{ c.quantity }}" min="1" max="99">
+                </td>
+                <td class="align-middle" id="total-{{c.id}}">
+                    {{ "{:,.0f}".format(c.product.price * c.quantity).replace(",", ".") }} ₫
+                </td>
+                <td class="align-middle">
+                    <a class="btn btn-danger" href="{{ url_for('remove_from_cart', id=c.id) }}">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr style="height: 75px;">
+                <td colspan="6"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row fixed-bottom align-items-center" style="background-color: aliceblue;height: 75px;">
+        <div class="col-3 col-md-7"></div>
+        <div class="col-2 col-md-2">
+            <h3>Tổng tiền:</h3>
+        </div>
+        <div class="col">
+            <h3 id="all-total"></h3>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary me-1" href="{{ url_for('checkout') }}">Thanh toán</a>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+<script>
+    update_total_cart();
+    $('[id^=quantity]').change(function () {
+        var id = $(this).attr('id').split('-')[1];
+        var quantity = $(this).val();
+        var price = $('#price-' + id).html().replaceAll('.', '').trim();
+        var total = parseInt(quantity, 10) * parseInt(price, 10);
+        // convert to currency format ,.0f
+        total_ = total.toLocaleString('vi', {
+            style: 'currency',
+            currency: 'VND'
+        });
+        $('#total-' + id).html(total_);
+        update_total_cart();
+
+        $.ajax({
+            url: "{{ url_for('cart_update') }}",
+            method: 'POST',
+            data: {
+                cart_id: id,
+                quantity: quantity,
+                total: total
+            }
+        })
+
+
+    });
+
+</script>
+{% endblock %}
